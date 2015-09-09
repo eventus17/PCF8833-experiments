@@ -343,7 +343,8 @@ void LCDDriverInitialize(char ColorMode)
 	// initialize the contrast
 	//
 	GlcdWriteCmd(SETCON);
-	GlcdWriteData(0x30);
+	//GlcdWriteData(0x30);
+        GlcdWriteData(0x40);
 	DeselectLCD();
 
 	//
