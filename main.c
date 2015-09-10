@@ -23,7 +23,23 @@ int main(void)
 	DrawFilledRect_RGB8(38, 50, 85,110,RGB8_BLUE);
 	DrawCircle_RGB8(61, 80, 40,RGB8_RED);
 	DrawLine_RGB8(10,35,120,35,RGB8_BLUE);
+        
+        
+        _delay_ms(2000);
 
+        SetScrolling();
+        SetSep(0); //scrolling entry point
+        
+        uint8_t ypos = 0;
+        
+        while(1)
+        {
+            if (ypos > 0x63) ypos = 0x00;
+            SetSep(ypos);
+            _delay_ms(100);
+            ypos++;
+        }
+        
         return 0;
 }
 

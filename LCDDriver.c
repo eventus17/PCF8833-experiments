@@ -417,16 +417,36 @@ void SetContrast(char val)
 	DeselectLCD();
 }
 
+void SetScrolling(void)
+{
+    GlcdWriteCmd(NORON); //NORON, normalny (nie cz??ciowy) tryb pracy
+    //non rolling mode
+    //instance row 0 and 131. If a 132 × 132 display is
+    //connected to the PCF8833 the content of row 0 and 131
+    //will be the same as the content which is displayed in row
+    //1 and 130, respectively. By doing so the display data RAM
+    //will have 2 rows in the background, whose content can be
+    //updated when they are not displayed.
+
+    GlcdWriteCmd(VSCRDEF); //  Vertical scrolling definition (VSCRDEF) command, czy bedzie obrocone gdy bit V=1 w MADCTL?
+    GlcdWriteData(0x00); //zero sta?ych linii od góry
+    GlcdWriteData(0x63); //100 linii scrollowanych
+    GlcdWriteData(0x19); //20 linii nieruchomych na dole
+    DeselectLCD();
+}
+void SetSep(uint8_t sep)
+{
+    GlcdWriteCmd(SEP); //SEP - scroll entry point
+    GlcdWriteData(sep); //sep 0-99, powiekszany o jeden
+    DeselectLCD();
+}
+
 /* ------------------------------------------------------------------------ */
-/*						  	 	 RGB8 Fonksiyonlar		 					*/
+/*						  	 	 RGB8 functions		 					*/
 /* ------------------------------------------------------------------------ */
 
 //
-// ekranda 8 bit renge sahip bir piksel görüntülenir.
-//		Enter:	X = x koordinatý (1 - 130)
-//				Y = y koordinatý (1 - 130)
-//				Color = (rrrgggbb)
-//
+
 void PutPixel_RGB8(char x, char y, char ColorRGB8)
 {	//
 	// set the coords of a box including just this one pixel
