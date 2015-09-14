@@ -337,7 +337,8 @@ void LCDDriverInitialize(char ColorMode)
 	//SPIData = MADCTL;
 	GlcdWriteCmd(MADCTL);
 	//SPIData = 0x20;			
-	GlcdWriteData(0x20);
+	//GlcdWriteData(0x20);
+        GlcdWriteData(0x40); //horizontal ram write, X mirror
 
 	//
 	// initialize the contrast
