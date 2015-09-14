@@ -56,7 +56,7 @@ int main(void)
         {
             if (ypos > 0x63) ypos = 0x00;
             xpos = adcData >> 2;
-            DrawLine_RGB8(ypos,0,ypos,131,RGB8_WHITE); //clear horizontal line
+            DrawLine_RGB8(ypos,0,ypos,131,RGB8_WHITE); //clear vertical line
             PutPixel_RGB8(ypos, xpos, RGB8_RED); //draw data
             SetSep(ypos);
             //_delay_ms(100);
