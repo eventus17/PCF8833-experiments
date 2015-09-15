@@ -420,7 +420,7 @@ void SetContrast(char val)
 
 void SetScrolling(void)
 {
-    GlcdWriteCmd(NORON); //NORON, normalny (nie cz??ciowy) tryb pracy
+    GlcdWriteCmd(NORON); //NORON, not partial mode
     //non rolling mode
     //instance row 0 and 131. If a 132 × 132 display is
     //connected to the PCF8833 the content of row 0 and 131
@@ -430,9 +430,9 @@ void SetScrolling(void)
     //updated when they are not displayed.
 
     GlcdWriteCmd(VSCRDEF); //  Vertical scrolling definition (VSCRDEF) command, czy bedzie obrocone gdy bit V=1 w MADCTL?
-    GlcdWriteData(0x00); //zero sta?ych linii od góry
-    GlcdWriteData(0x63); //100 linii scrollowanych
-    GlcdWriteData(0x19); //20 linii nieruchomych na dole
+    GlcdWriteData(0); //zero sta?ych linii od góry
+    GlcdWriteData(100); //100 linii scrollowanych
+    GlcdWriteData(32); //32 linii nieruchomych na dole
     DeselectLCD();
 }
 void SetSep(uint8_t sep)

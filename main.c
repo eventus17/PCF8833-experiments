@@ -6,6 +6,7 @@ adrian.v.przekwas@gmail.com
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h> 
+#include <stdio.h>
 #include "LCDDriver.h"
 
 
@@ -25,7 +26,7 @@ ADCH. Otherwise, ADCL must be read first, then ADCH.*/
     ADCSRA = _BV(ADEN)|_BV(ADIE)|_BV(ADSC)|_BV(ADPS2)|_BV(ADPS1); //set prescaler to 64 - set ADCSRA to re-enable ADC
 }
 
-adcInit(void)
+void adcInit(void)
 {
     ADMUX = adcNum | (1<<REFS0) | (1<<ADLAR); //REFS0 reference from V supply
     //ADMUX  = (1<<REFS1) | (1<<REFS0) | (1<<ADLAR) | adcnum; //REFS1 and 2 means internal 2.56V as vref, when ADLAR=1 then ADCH is 8 most signifant bits
@@ -51,16 +52,21 @@ int main(void)
         
         uint8_t xpos = 0;
         uint8_t ypos = 0;
+        char  buf[3];
         
         while(1)
         {
+            cli();
             if (ypos > 0x63) ypos = 0x00;
-            xpos = adcData >> 2;
+            xpos = adcData >> 1;
             DrawLine_RGB8(ypos,0,ypos,131,RGB8_WHITE); //clear vertical line
-            PutPixel_RGB8(ypos, xpos, RGB8_RED); //draw data
+            PutPixel_RGB8(ypos, 128-xpos, RGB8_BLUE); //draw data
             SetSep(ypos);
+            sprintf(buf,"%3u",adcData); //nubmer to string
+            DrawStr_8(buf ,110,30,RGB8_BLUE, RGB8_WHITE);
             //_delay_ms(100);
             ypos++;
+            sei();
             
         }
         
