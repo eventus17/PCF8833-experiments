@@ -13,6 +13,8 @@ adrian.v.przekwas@gmail.com
 volatile uint8_t adcNum = 0; //start from pc0
 volatile uint8_t adcData = 0;
 volatile uint8_t baseTime = 1;
+volatile uint8_t trigVal = 0;
+volatile uint8_t trigEnab = 0;
 volatile uint8_t allowDrawing = 0;
 
 
@@ -42,6 +44,7 @@ void adcInit(void)
 
 void checkButtons(void)
 {
+    char  buf2[3];
     if(!(PINB & _BV(PB0)))
     {
         _delay_ms(25);
@@ -51,11 +54,53 @@ void checkButtons(void)
             if (baseTime >= 255) baseTime = 1;
             OCR2A = baseTime;
             
-            char  buf2[3];
             sprintf(buf2,"%3u",baseTime);
             DrawStr_8(buf2 ,110,60,RGB8_RED, RGB8_WHITE);
         }
     }
+    if(!(PINB & _BV(PB1)))
+    {
+        _delay_ms(25);
+        if(!(PINB & _BV(PB1)))
+        {
+            trigVal++;
+            if (trigVal >= 255) trigVal = 1;
+            
+            char  buf2[3];
+            sprintf(buf2,"%3u",trigVal);
+            DrawStr_8(buf2,110,80,RGB8_BLUE, RGB8_WHITE);
+        }
+    }
+    if(!(PINB & _BV(PB2)))
+    {
+        _delay_ms(500);
+        if(!(PINB & _BV(PB2)))
+        {
+            if (!trigEnab)
+            {
+                DrawStr_8("TRG", 110, 90, RGB8_BLUE, RGB8_WHITE);
+                trigEnab = 1;
+            }
+            else
+            {
+                DrawStr_8("OFF", 110, 90, RGB8_BLUE, RGB8_WHITE);
+                trigEnab = 0;    
+            }
+        }
+    }
+}
+
+uint8_t checkTriggering(uint8_t oldVal, uint8_t newVal)
+{
+    if (!trigEnab) return 1; 
+    if (trigEnab == 1) //TODO falling, rising etc.
+    {
+        if ((trigVal > oldVal) && (trigVal <= newVal))
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void timerInitialize(void)
@@ -75,8 +120,8 @@ int main(void)
         timerInitialize();
 	GlcdClear();
 	
-	//DrawChar_8('V', 110, 45 , RGB8_BLUE, RGB8_WHITE);
-        DrawChar_8('T', 110, 75 , RGB8_RED, RGB8_WHITE);
+        DrawStr_8("TIM", 110, 70 , RGB8_RED, RGB8_WHITE);
+        DrawStr_8("OFF", 110, 90 , RGB8_BLUE, RGB8_WHITE);
         
         SetScrolling();
         SetSep(0); //scrolling entry point
@@ -86,13 +131,13 @@ int main(void)
         
         uint8_t xpos = 0;
         uint8_t ypos = 0;
+        uint8_t oldVal = 0;
         char  buf[3];
         sprintf(buf,"%3u",baseTime);
         DrawStr_8(buf ,110,60,RGB8_RED, RGB8_WHITE);
         
         while(1)
         {
-
             checkButtons();
             if (allowDrawing)
             {
@@ -101,14 +146,17 @@ int main(void)
                 xpos = adcData >> 1;
                 DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
                 PutPixel_RGB8(ypos, 128-xpos, RGB8_BLUE); //draw data
-                SetSep(ypos);
                 /*sprintf(buf,"%3u",adcData); //nubmer to string
                 DrawStr_8(buf ,110,30,RGB8_BLUE, RGB8_WHITE);*/
+                if (checkTriggering(oldVal, adcData))
+                {
+                    SetSep(ypos);
+                }
                 ypos++;
+                oldVal = adcData;
                 allowDrawing = 0;
                 sei();
             }
-            
         }
         
         return 0;
