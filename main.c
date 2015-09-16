@@ -62,7 +62,7 @@ void timerInitialize(void)
 {
     TCCR2B |= _BV(CS20) | _BV(CS21) | _BV(CS22); // Set 8 bit timer 2 with 1024 prescaler
     TCCR2A |= _BV(WGM21); // set timer CTC mode
-    OCR2A = 255; // set demanded value on CTC
+    OCR2A = baseTime; // set demanded value on CTC
     TIMSK2 |= _BV(OCIE2A); // allow interrupt from CTC
 }
 
