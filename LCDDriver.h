@@ -99,6 +99,7 @@ void PutPixel_RGB8(char, char, char);
 void DrawFilledRect_RGB8(char, char, char, char, char);
 void DrawHorzGradientRGB8(char *, char, char, char, char);
 void DrawLine_RGB8(int, int, int, int, char);
+void DrawColumn_RGB8(int, char);
 void DrawCircle_RGB8(int, int, int, char);
 void DrawStr_8(const char *,char,char,char,char);
 void DrawChar_8(char,char,char,char,char);

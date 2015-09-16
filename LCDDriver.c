@@ -566,6 +566,25 @@ void DrawLine_RGB8(int X1, int Y1, int X2, int Y2, char ColorRGB8)
 	}
 }
 
+void DrawColumn_RGB8(int Y, char ColorRGB8)
+{       
+        uint8_t i;
+	// Enter rectangle coords
+	GlcdWriteCmd(PASET);
+	GlcdWriteData(Y);
+	GlcdWriteData(Y);
+	GlcdWriteCmd(CASET);
+	GlcdWriteData(0);
+	GlcdWriteData(132);
+	// Fill rectangle
+	GlcdWriteCmd(RAMWR);
+	for (i = 0; i < 132; i++)
+        {
+            GlcdWriteData(ColorRGB8);
+        }
+	GlcdWriteCmd(NOOP);
+	DeselectLCD();
+}
 
 void DrawCircle_RGB8(int X1, int Y1, int Radius, char ColorRGB8) 
 {	int f;

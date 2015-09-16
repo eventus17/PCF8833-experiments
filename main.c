@@ -75,7 +75,7 @@ int main(void)
         timerInitialize();
 	GlcdClear();
 	
-	DrawChar_8('V', 110, 45 , RGB8_BLUE, RGB8_WHITE);
+	//DrawChar_8('V', 110, 45 , RGB8_BLUE, RGB8_WHITE);
         DrawChar_8('T', 110, 75 , RGB8_RED, RGB8_WHITE);
         
         SetScrolling();
@@ -99,11 +99,11 @@ int main(void)
                 cli();
                 if (ypos > 0x63) ypos = 0x00;
                 xpos = adcData >> 1;
-                DrawLine_RGB8(ypos,0,ypos,131,RGB8_WHITE); //clear vertical line
+                DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
                 PutPixel_RGB8(ypos, 128-xpos, RGB8_BLUE); //draw data
                 SetSep(ypos);
-                sprintf(buf,"%3u",adcData); //nubmer to string
-                DrawStr_8(buf ,110,30,RGB8_BLUE, RGB8_WHITE);
+                /*sprintf(buf,"%3u",adcData); //nubmer to string
+                DrawStr_8(buf ,110,30,RGB8_BLUE, RGB8_WHITE);*/
                 ypos++;
                 allowDrawing = 0;
                 sei();
