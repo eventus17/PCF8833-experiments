@@ -142,17 +142,18 @@ int main(void)
             if (allowDrawing)
             {
                 cli();
-                if (ypos > 0x63) ypos = 0x00;
-                xpos = adcData >> 1;
-                DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
-                PutPixel_RGB8(ypos, 128-xpos, RGB8_BLUE); //draw data
-                /*sprintf(buf,"%3u",adcData); //nubmer to string
-                DrawStr_8(buf ,110,30,RGB8_BLUE, RGB8_WHITE);*/
+                if (ypos <= 0x63)
+                {
+                    xpos = adcData >> 1;
+                    DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
+                    PutPixel_RGB8(ypos, 128-xpos, RGB8_BLUE); //draw data
+                    ypos++;
+                }
                 if (checkTriggering(oldVal, adcData))
                 {
                     SetSep(ypos);
                 }
-                ypos++;
+                if ((ypos > 0x63) && (checkTriggering(oldVal, adcData)))  ypos = 0x00;
                 oldVal = adcData;
                 allowDrawing = 0;
                 sei();
