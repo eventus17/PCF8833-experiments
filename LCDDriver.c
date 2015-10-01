@@ -431,8 +431,8 @@ void SetScrolling(void)
 
     GlcdWriteCmd(VSCRDEF); //  Vertical scrolling definition (VSCRDEF) command, czy bedzie obrocone gdy bit V=1 w MADCTL?
     GlcdWriteData(0); //zero sta?ych linii od góry
-    GlcdWriteData(100); //100 linii scrollowanych
-    GlcdWriteData(32); //32 linii nieruchomych na dole
+    GlcdWriteData(SPOS); //100 linii scrollowanych
+    GlcdWriteData(132-SPOS); //32 linii nieruchomych na dole
     DeselectLCD();
 }
 void SetSep(uint8_t sep)

@@ -91,6 +91,8 @@
 #define RGB12_YELLOW	0XFF2
 #define RGB12_PURPLE 	0XE0E
 
+#define SPOS 32
+
 void LCDDriverInitialize(char ColorMode);
 void LCDSelectColorMode(char, char *);
 void GlcdClear(void);
