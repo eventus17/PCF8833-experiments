@@ -80,8 +80,10 @@ int main(void)
         
         sei(); //enable interrupt
         
-        uint8_t xpos1 = 0;
-        uint8_t xpos2 = 0;
+        uint8_t xpos1 = 64;
+        uint8_t xpos2 = 64;
+        uint8_t xpos1old = 64;
+        uint8_t xpos2old = 64;
         uint8_t ypos = 0;
         char  buf[3];
         
@@ -102,15 +104,18 @@ int main(void)
             SetSep(ypos);
             if (ypos > SPOS)  ypos = 0x00;
             
-            DrawFilledRect_RGB8(35, 35, 95, 95, RGB8_WHITE); //clear screen non-scrolling area, partial
+            DrawFilledRect_RGB8(xpos1old-2, xpos2old-2, xpos1old+2, xpos2old+2, RGB8_WHITE); //clear screen non-scrolling area, partial, only former cursor area
             DrawCircle_RGB8(xpos1, xpos2, 2, RGB8_RED); 
-            DrawCircle_RGB8(64, 64, 12, RGB8_BLACK); 
-            DrawCircle_RGB8(64, 64, 25, RGB8_BLACK);
+            DrawCircle_RGB8(64, 64, 12, RGB8_GREEN); 
+            DrawCircle_RGB8(64, 64, 25, RGB8_GREEN);
             
             sprintf(buf,"%3u",adcX);
             DrawStr_8(buf,110, 60, RGB8_BLUE, RGB8_WHITE);
             sprintf(buf,"%3u",adcY);
             DrawStr_8(buf, 110, 70, RGB8_RED, RGB8_WHITE);
+            
+            xpos1old = xpos1;
+            xpos2old = xpos2;
             
             sei();
         }
