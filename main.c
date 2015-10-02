@@ -85,7 +85,9 @@ int main(void)
         uint8_t xpos1old = 64;
         uint8_t xpos2old = 64;
         uint8_t ypos = 0;
-        char  buf[3];
+        char  buf[5];
+        float adcXf = 0.0;
+        float adcYf = 0.0;
         
         while(1)
         {
@@ -111,10 +113,15 @@ int main(void)
             DrawCircle_RGB8(64, 64, 12, RGB8_GREEN); 
             DrawCircle_RGB8(64, 64, 25, RGB8_GREEN);
             
-            sprintf(buf,"%3u",adcX);
-            DrawStr_8(buf,110, 60, RGB8_BLUE, RGB8_WHITE);
-            sprintf(buf,"%3u",adcY);
-            DrawStr_8(buf, 110, 70, RGB8_RED, RGB8_WHITE);
+            adcXf = (float)adcX * 0.0196f - 2.5f; //((ADC/255*2.5)-1.25)/0.5
+            adcYf = (float)adcY * 0.0196f - 2.5f;
+            
+            //sprintf(buf,"%4u",adcX);
+            sprintf(buf,"%+1.2f",adcXf);
+            DrawStr_8(buf,100, 60, RGB8_BLUE, RGB8_WHITE);
+            //sprintf(buf,"%4u",adcY);
+            sprintf(buf,"%+1.2f",adcYf);
+            DrawStr_8(buf, 100, 70, RGB8_RED, RGB8_WHITE);
             
             xpos1old = xpos1;
             xpos2old = xpos2;
