@@ -105,7 +105,9 @@ int main(void)
             if (ypos > SPOS)  ypos = 0x00;
             
             DrawFilledRect_RGB8(xpos1old-2, xpos2old-2, xpos1old+2, xpos2old+2, RGB8_WHITE); //clear screen non-scrolling area, partial, only former cursor area
-            DrawCircle_RGB8(xpos1, xpos2, 2, RGB8_RED); 
+            //DrawCircle_RGB8(xpos1, xpos2, 2, RGB8_RED);
+            DrawPointer5(xpos1, xpos2, RGB8_RED, RGB8_WHITE);
+            
             DrawCircle_RGB8(64, 64, 12, RGB8_GREEN); 
             DrawCircle_RGB8(64, 64, 25, RGB8_GREEN);
             

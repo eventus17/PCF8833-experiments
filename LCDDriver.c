@@ -681,6 +681,33 @@ void DrawChar_8(char C ,char X,char Y,char char_color8,char backgr_color8){
 		GlcdWriteCmd(NOOP);
 		DeselectLCD();
 		}
+		
+void DrawPointer5(char X,char Y,char ptr_color8,char backgr_color8)
+{
+	char curdata,column,row,mask;
+	GlcdWriteCmd(PASET);
+	GlcdWriteData(X - 2);
+	GlcdWriteData(X + 2);	
+	GlcdWriteCmd(CASET);
+	GlcdWriteData(Y - 2);
+	GlcdWriteData(Y + 2);
+	GlcdWriteCmd(RAMWR);
+        
+        static const uint8_t data[5] = {0x04, 0x04, 0x1F, 0x04, 0x04};
+        for(column=0; column<5; column++)
+        {
+            curdata = data[column]; 
+            mask=0x01;
+            for (row = 0; row < 5; row++){   
+            if ((curdata & mask) == 0)
+                    GlcdWriteData(backgr_color8);
+            else
+                    GlcdWriteData(ptr_color8);
+                    mask = mask << 1;}
+        }
+        GlcdWriteCmd(NOOP);
+        DeselectLCD();
+}
 
 /* ------------------------------------------------------------------------ */
 /*						  	 	 RGB12 functions 		 				*/

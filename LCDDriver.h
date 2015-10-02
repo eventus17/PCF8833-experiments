@@ -108,7 +108,8 @@ void DrawChar_8(char,char,char,char,char);
 void DrawFilledRect_RGB212(char, char, char, char, int);
 void DrawPixmap_RGB12( char *, char, char);
 void SetScrolling(void);
-void SetSep(uint8_t sep);
+void SetSep(uint8_t);
+void DrawPointer5(char, char, char, char);
 
 
 /* --------------------------- End of LCDDriver.h ------------------------- */
