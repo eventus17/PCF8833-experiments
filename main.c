@@ -88,27 +88,39 @@ int main(void)
         char  buf[5];
         float adcXf = 0.0;
         float adcYf = 0.0;
+        uint8_t counter = 0;
         
         while(1)
         {
             //checkButtons();
 
             cli();
-            if (ypos <= SPOS)
+            xpos1 = adcX >> 1;
+            xpos2 = adcY >> 1;
+            if (counter >= 20)
             {
-                xpos1 = adcX >> 1;
-                xpos2 = adcY >> 1;
-                DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
-                PutPixel_RGB8(ypos, 128-xpos1, RGB8_BLUE); //draw data
-                PutPixel_RGB8(ypos, 128-xpos2, RGB8_RED);
-                ypos++;
+                if (ypos <= SPOS)
+                {
+                    DrawColumn_RGB8(ypos,RGB8_WHITE); //clear vertical line
+                    //DrawLine_RGB8(ypos, xpos1old, ypos + 1, xpos1, RGB8_BLUE);
+                    //DrawLine_RGB8(ypos, xpos2old, ypos + 1, xpos2, RGB8_RED);
+                    PutPixel_RGB8(ypos, 128-xpos1, RGB8_BLUE); //draw data
+                    PutPixel_RGB8(ypos, 128-xpos2, RGB8_RED);
+                    ypos++;
+                }
+                SetSep(ypos);
+                if (ypos > SPOS)  ypos = 0x00;
+                
+                counter = 0;
             }
-            SetSep(ypos);
-            if (ypos > SPOS)  ypos = 0x00;
+            else
+            {
+                counter++;
+            }
             
-            DrawFilledRect_RGB8(xpos1old-2, xpos2old-2, xpos1old+2, xpos2old+2, RGB8_WHITE); //clear screen non-scrolling area, partial, only former cursor area
+            DrawFilledRect_RGB8(xpos1old - 2, 128 - xpos2old - 2, xpos1old + 2, 128 - xpos2old + 2, RGB8_WHITE); //clear screen non-scrolling area, partial, only former cursor area
             //DrawCircle_RGB8(xpos1, xpos2, 2, RGB8_RED);
-            DrawPointer5(xpos1, xpos2, RGB8_RED, RGB8_WHITE);
+            DrawPointer5(xpos1, 128 - xpos2, RGB8_RED, RGB8_WHITE); //Y axis have to be mirrored
             
             DrawCircle_RGB8(64, 64, 12, RGB8_GREEN); 
             DrawCircle_RGB8(64, 64, 25, RGB8_GREEN);

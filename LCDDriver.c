@@ -684,7 +684,7 @@ void DrawChar_8(char C ,char X,char Y,char char_color8,char backgr_color8){
 		
 void DrawPointer5(char X,char Y,char ptr_color8,char backgr_color8)
 {
-	char curdata,column,row,mask;
+	uint8_t curdata,column,row,mask;
 	GlcdWriteCmd(PASET);
 	GlcdWriteData(X - 2);
 	GlcdWriteData(X + 2);	
