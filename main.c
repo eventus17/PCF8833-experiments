@@ -85,10 +85,12 @@ int main(void)
         uint8_t xpos1old = 64;
         uint8_t xpos2old = 64;
         uint8_t ypos = 0;
-        char  buf[5];
+        char  buf5[5], buf3[3];
         float adcXf = 0.0;
         float adcYf = 0.0;
         uint8_t counter = 0;
+        uint8_t angleX = 0;
+        uint8_t angleY = 0;
         
         while(1)
         {
@@ -129,11 +131,19 @@ int main(void)
             adcYf = (float)adcY * 0.0196f - 2.5f;
             
             //sprintf(buf,"%4u",adcX);
-            sprintf(buf,"%+1.2f",adcXf);
-            DrawStr_8(buf,100, 60, RGB8_BLUE, RGB8_WHITE);
+            sprintf(buf5,"%+1.2f",adcXf);
+            DrawStr_8(buf5,100, 60, RGB8_BLUE, RGB8_WHITE);
             //sprintf(buf,"%4u",adcY);
-            sprintf(buf,"%+1.2f",adcYf);
-            DrawStr_8(buf, 100, 70, RGB8_RED, RGB8_WHITE);
+            sprintf(buf5,"%+1.2f",adcYf);
+            DrawStr_8(buf5, 100, 70, RGB8_RED, RGB8_WHITE);
+        
+            angleX = GetAngle(adcX);
+            sprintf(buf3,"%3u", angleX);
+            DrawStr_8(buf3,100, 80, RGB8_BLUE, RGB8_WHITE);
+        
+            angleY = GetAngle(adcY);
+            sprintf(buf3,"%3u", angleY);
+            DrawStr_8(buf3,100, 90, RGB8_RED, RGB8_WHITE);
             
             xpos1old = xpos1;
             xpos2old = xpos2;

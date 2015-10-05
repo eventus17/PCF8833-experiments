@@ -110,6 +110,7 @@ void DrawPixmap_RGB12( char *, char, char);
 void SetScrolling(void);
 void SetSep(uint8_t);
 void DrawPointer5(char, char, char, char);
+uint8_t GetAngle(uint8_t);
 
 
 /* --------------------------- End of LCDDriver.h ------------------------- */
