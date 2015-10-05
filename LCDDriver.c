@@ -303,11 +303,12 @@ static void DeselectLCD(void);
 /* ------------------------------------------------------------------------ */
 /*						  	Public general functions 		 				*/
 /* ------------------------------------------------------------------------ */
-uint8_t GetAngle(uint8_t Val)
+int GetAngle(uint8_t Val)
 {
     if (Val > 75 && Val < 180) //-1 to +1 g
     {
-        uint8_t angle = pgm_read_byte(&angleTab[Val - 76]);
+        uint8_t uangle = pgm_read_byte(&angleTab[Val - 76]);
+        int angle = (int)uangle - 90;
         return angle;
     }
     else
