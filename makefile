@@ -83,7 +83,7 @@ OBJDIR = .
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC = $(TARGET).c
-SRC += LCDDriver.c
+SRC += LCDDriver.c uart.c
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC =

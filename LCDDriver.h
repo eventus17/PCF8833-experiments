@@ -7,18 +7,18 @@
 // define the LCD's controller chip
 //
 #define LCD_CONTROLLER_PHILIPS_PCF8833 //Glcd sürücü entegre
-#define GLCD_RESET_DDR		DDRD	// Glcd reset pini yönlendirme kaydedicisi
-#define GLCD_RESET_PORT		PORTD	// Glcd reset pini portu
-#define LCD_RESET PD0				// Glcd reset pini
-#define GLCD_SPI_SDO_DDR		DDRD	// Glcd ser data pini yönlendirme kaydedicisi
-#define GLCD_SPI_SDO_PORT		PORTD	// Glcd seri data pini portu
-#define SPI_SDO PD1						// Glcd seri data pini
-#define GLCD_SPI_SCK_DDR		DDRD	// Glcd saat sinyali pini yönlendirme kaydedicisi
-#define GLCD_SPI_SCK_PORT		PORTD	// Glcd saat sinyali pini portu
-#define SPI_SCK PD2						// Glcd saat sinyali pini
-#define GLCD_CS_DDR		DDRD	// Glcd çip seçme pini yönlendirme kaydedicisi
-#define GLCD_CS_PORT		PORTD // Glcd çip seçme pini portu
-#define LCD_CS PD3						// Glcd çip seçme pini
+#define GLCD_RESET_DDR		DDRB	// Glcd reset pini yönlendirme kaydedicisi
+#define GLCD_RESET_PORT		PORTB	// Glcd reset pini portu
+#define LCD_RESET PB0				// Glcd reset pini
+#define GLCD_SPI_SDO_DDR		DDRB	// Glcd ser data pini yönlendirme kaydedicisi
+#define GLCD_SPI_SDO_PORT		PORTB	// Glcd seri data pini portu
+#define SPI_SDO PB1						// Glcd seri data pini
+#define GLCD_SPI_SCK_DDR		DDRB	// Glcd saat sinyali pini yönlendirme kaydedicisi
+#define GLCD_SPI_SCK_PORT		PORTB	// Glcd saat sinyali pini portu
+#define SPI_SCK PB2						// Glcd saat sinyali pini
+#define GLCD_CS_DDR		DDRB	// Glcd çip seçme pini yönlendirme kaydedicisi
+#define GLCD_CS_PORT		PORTB // Glcd çip seçme pini portu
+#define LCD_CS PB3						// Glcd çip seçme pini
 
 //
 // values for the Color Mode
@@ -111,6 +111,9 @@ void SetScrolling(void);
 void SetSep(uint8_t);
 void DrawPointer5(char, char, char, char);
 int GetAngle(uint8_t);
+void GlcdWriteData(char);
+void GlcdWriteCmd(char);
+void DeselectLCD(void);
 
 
 /* --------------------------- End of LCDDriver.h ------------------------- */

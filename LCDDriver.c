@@ -294,10 +294,10 @@ static char *CurrentColorMap;
 
 static void SpiInit(void);
 static void SpiByteSend(char);
-static void GlcdWriteCmd(char);
+//static void GlcdWriteCmd(char);
 static void WriteRomDataToLCD( char *, unsigned int);
-static void GlcdWriteData(char);
-static void DeselectLCD(void);
+//static void GlcdWriteData(char);
+//static void DeselectLCD(void);
 
 
 /* ------------------------------------------------------------------------ */
@@ -808,7 +808,7 @@ static void SpiInit(void)
 //  Write 1 byte
 //
 //
-static void GlcdWriteCmd(char data)
+void GlcdWriteCmd(char data)
 {
 	GLCD_CS_PORT&=~_BV(LCD_CS);
 	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO);
@@ -826,7 +826,7 @@ static void WriteRomDataToLCD( char *RomData, unsigned int Count)
 	}
 }
 
-static void GlcdWriteData(char data)
+void GlcdWriteData(char data)
 {
 	GLCD_SPI_SDO_PORT|=_BV(SPI_SDO);
 	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK);
@@ -869,7 +869,7 @@ static void SpiByteSend (char spi_data){
 	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
 }
 
-static void DeselectLCD(void)
+void DeselectLCD(void)
 {
 	GLCD_CS_PORT|=_BV(LCD_CS);
 }
