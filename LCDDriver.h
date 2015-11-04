@@ -6,19 +6,11 @@
 //
 // define the LCD's controller chip
 //
-#define LCD_CONTROLLER_PHILIPS_PCF8833 //Glcd sürücü entegre
-#define GLCD_RESET_DDR		DDRD	// Glcd reset pini yönlendirme kaydedicisi
-#define GLCD_RESET_PORT		PORTD	// Glcd reset pini portu
-#define LCD_RESET PD0				// Glcd reset pini
-#define GLCD_SPI_SDO_DDR		DDRD	// Glcd ser data pini yönlendirme kaydedicisi
-#define GLCD_SPI_SDO_PORT		PORTD	// Glcd seri data pini portu
-#define SPI_SDO PD1						// Glcd seri data pini
-#define GLCD_SPI_SCK_DDR		DDRD	// Glcd saat sinyali pini yönlendirme kaydedicisi
-#define GLCD_SPI_SCK_PORT		PORTD	// Glcd saat sinyali pini portu
-#define SPI_SCK PD2						// Glcd saat sinyali pini
-#define GLCD_CS_DDR		DDRD	// Glcd çip seçme pini yönlendirme kaydedicisi
-#define GLCD_CS_PORT		PORTD // Glcd çip seçme pini portu
-#define LCD_CS PD3						// Glcd çip seçme pini
+#define LCD_CONTROLLER_PHILIPS_PCF8833
+#define GLCD_RESET      0b00000001
+#define SPI_SDO         0b00000010
+#define SPI_SCK         0b00000100
+#define GLCD_CS          0b00001000
 
 //
 // values for the Color Mode

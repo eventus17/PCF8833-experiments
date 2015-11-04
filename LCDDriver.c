@@ -47,12 +47,14 @@
 /* ------------------------------------------------------------------------ */
 
 
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include <util/delay.h>
+#include <sys/io.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
 #include "LCDDriver.h"
 
-
+#define BASEPORT 0x378
 /* ------------------------------------------------------------------------ */
 
 
@@ -110,7 +112,7 @@
 #define RDID3 	0xDC 		// read ID3
 
 
-const uint8_t Font5x7[] PROGMEM = {
+const uint8_t Font5x7[] = {
 	0x00, 0x00, 0x00, 0x00, 0x00,// (space)
 	0x00, 0x00, 0x5F, 0x00, 0x00,// !
 	0x00, 0x07, 0x00, 0x07, 0x00,// "
@@ -313,10 +315,10 @@ void LCDDriverInitialize(char ColorMode)
 	//
 	// hardware reset the LCD display
 	//
-	GLCD_RESET_PORT&=~_BV(LCD_RESET);
-	_delay_ms(30);
-	GLCD_RESET_PORT|=_BV(LCD_RESET);
-	_delay_ms(30);
+        outb(( inb(BASEPORT) &~ GLCD_RESET), BASEPORT );
+        usleep( 30000 );
+        outb(( inb(BASEPORT) | GLCD_RESET), BASEPORT );
+        usleep( 30000 );
 
 
 	//
@@ -324,7 +326,7 @@ void LCDDriverInitialize(char ColorMode)
 	//
 	//SPIData = SLEEPOUT;
 	GlcdWriteCmd(SLEEPOUT);
-	_delay_ms(2);
+        usleep( 2000 );
 
 	
 	//
@@ -351,7 +353,7 @@ void LCDDriverInitialize(char ColorMode)
 	//
 	// turn on the display
 	//
-	_delay_ms(4);
+        usleep( 4000 );
 	GlcdWriteCmd(DISPON);		
 
 	//
@@ -669,7 +671,7 @@ void DrawChar_8(char C ,char X,char Y,char char_color8,char backgr_color8){
 	GlcdWriteData(Y + 7);
 	GlcdWriteCmd(RAMWR);
 		for(column=0; column<5; column++){
-		chardata=pgm_read_byte(&Font5x7[(((C - 0x20) * 5) + column)]);
+		chardata=Font5x7[(((C - 0x20) * 5) + column)];
 		mask=0x01;
 		for (row = 0; row < 8; row++){
 		if ((chardata & mask) == 0)
@@ -742,13 +744,14 @@ void DrawPixmap_RGB12( char *Bitmap, char X, char Y)
 static void SpiInit(void)
 {
 	// LCD piout setup
-	GLCD_CS_PORT|=_BV(LCD_CS);
-	GLCD_CS_DDR|=_BV(LCD_CS);
-	GLCD_RESET_PORT&=~_BV(LCD_RESET);
-	GLCD_RESET_DDR|=_BV(LCD_RESET);
-	GLCD_SPI_SDO_DDR|=_BV(SPI_SDO);
-	GLCD_SPI_SCK_DDR|=_BV(SPI_SCK);
-
+    	if( ioperm(BASEPORT, 3, 1) ) {
+		perror( "ioperm" );
+		exit( 1 );
+	}
+	
+    	outb( 0x00, BASEPORT );        
+	outb(( inb(BASEPORT) | GLCD_CS), BASEPORT );
+        outb(( inb(BASEPORT) &~ GLCD_RESET), BASEPORT );
 }
 
 //
@@ -757,10 +760,11 @@ static void SpiInit(void)
 //
 static void GlcdWriteCmd(char data)
 {
-	GLCD_CS_PORT&=~_BV(LCD_CS);
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO);
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK);
-	GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK);
+    
+        outb(( inb(BASEPORT) &~ GLCD_CS), BASEPORT );
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT );
+        outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT );
 	SpiByteSend(data);
 }
 
@@ -775,48 +779,48 @@ static void WriteRomDataToLCD( char *RomData, unsigned int Count)
 
 static void GlcdWriteData(char data)
 {
-	GLCD_SPI_SDO_PORT|=_BV(SPI_SDO);
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK);
-	GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK);
+        outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT );
+        outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT );
 	SpiByteSend(data);
 }
 // Msb first 
 static void SpiByteSend (char spi_data){
 
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x80) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO);	
-	if (spi_data & 0x40) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x20) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x10) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO);	
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x08) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x04) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x02) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
-	
-	GLCD_SPI_SDO_PORT&=~_BV(SPI_SDO); 
-	if (spi_data & 0x01) GLCD_SPI_SDO_PORT|=_BV(SPI_SDO); 
-	GLCD_SPI_SCK_PORT|=_BV(SPI_SCK); GLCD_SPI_SCK_PORT&=~_BV(SPI_SCK); 
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x80) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+        
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x40) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x20) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+        
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x10) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+        
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x08) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+        
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x04) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x02) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
+        
+        outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
+        if (spi_data & 0x01) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
+        outb(( inb(BASEPORT) | SPI_SCK), BASEPORT ); outb(( inb(BASEPORT) &~ SPI_SCK), BASEPORT ); 
 }
 
 static void DeselectLCD(void)
 {
-	GLCD_CS_PORT|=_BV(LCD_CS);
+        outb(( inb(BASEPORT) | GLCD_CS), BASEPORT );
 }
