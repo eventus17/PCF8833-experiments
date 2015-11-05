@@ -218,7 +218,7 @@ const uint8_t Font5x7[] = {
 //
 // color map for RGB12 (rrrrggggbbbb)
 //
-static  char RGB12ColorMap[] = {
+static  uint8_t RGB12ColorMap[] = {
 	// number of bytes in the table excluding this one
 	48,
 	
@@ -238,7 +238,7 @@ static  char RGB12ColorMap[] = {
 // detailed in the Philips datasheet, but does work correctly with the displays used
 // to develop this software.  I'm not sure why.
 //
-static  char RGB8ColorMap[] = {
+static  uint8_t RGB8ColorMap[] = {
 	// number of bytes in the table excluding this one
 	48,
 
@@ -276,8 +276,8 @@ static  char RGB8ColorMap[] = {
 /*             	    Private variables local to this module					*/
 /* ------------------------------------------------------------------------ */
 
-static char CurrentColorMode;
-static char *CurrentColorMap;
+static uint8_t CurrentColorMode;
+static uint8_t *CurrentColorMap;
 
 
 /* ------------------------------------------------------------------------ */
@@ -285,10 +285,10 @@ static char *CurrentColorMap;
 /* ------------------------------------------------------------------------ */
 
 static void SpiInit(void);
-static void SpiByteSend(char);
-static void GlcdWriteCmd(char);
-static void WriteRomDataToLCD( char *, unsigned int);
-static void GlcdWriteData(char);
+static void SpiByteSend(uint8_t);
+static void GlcdWriteCmd(uint8_t);
+static void WriteRomDataToLCD( uint8_t *, unsigned int);
+static void GlcdWriteData(uint8_t);
 static void DeselectLCD(void);
 
 
@@ -300,7 +300,7 @@ static void DeselectLCD(void);
 // initialize this module and the LCD controller
 //		Enter:	ColorMode = LCD_COLOR_MODE_RGB8 or LCD_COLOR_MODE_RGB8
 //
-void LCDDriverInitialize(char ColorMode)
+void LCDDriverInitialize(uint8_t ColorMode)
 {	//
 	// initialize state variables
 	//
@@ -368,8 +368,8 @@ void LCDDriverInitialize(char ColorMode)
 //		Enter:	ColorMode = LCD_COLOR_MODE_RGB8 or LCD_COLOR_MODE_RGB8
 //				ColorMap -> color map table, if 0 then use default table
 //
-void LCDSelectColorMode(char ColorMode,  char *ColorMap)
-{	 char *ColorMapTable;
+void LCDSelectColorMode(uint8_t ColorMode,  uint8_t *ColorMap)
+{	 uint8_t *ColorMapTable;
 	
 	//
 	// check if the display is already in the current mode
@@ -413,10 +413,10 @@ void GlcdClear(void)
 
 //		Contrast (-64 to 63)
 //
-void SetContrast(char val)
+void SetContrast(uint8_t val)
 {	
 	GlcdWriteCmd(SETCON);
-	GlcdWriteData((char) val);
+	GlcdWriteData((uint8_t) val);
 	DeselectLCD();
 }
 
@@ -450,7 +450,7 @@ void SetSep(uint8_t sep)
 
 //
 
-void PutPixel_RGB8(char x, char y, char ColorRGB8)
+void PutPixel_RGB8(uint8_t x, uint8_t y, uint8_t ColorRGB8)
 {	//
 	// set the coords of a box including just this one pixel
 	//
@@ -469,7 +469,7 @@ void PutPixel_RGB8(char x, char y, char ColorRGB8)
 	DeselectLCD();
 }
 
-void DrawFilledRect_RGB8(char Left, char Top, char Right, char Bottom, char ColorRGB8)
+void DrawFilledRect_RGB8(uint8_t Left, uint8_t Top, uint8_t Right, uint8_t Bottom, uint8_t ColorRGB8)
 {	int i,PixelCount;
 	if ((Left > Right) || (Top > Bottom))
 		return;
@@ -497,8 +497,8 @@ void DrawFilledRect_RGB8(char Left, char Top, char Right, char Bottom, char Colo
 //				TopY = Y coord of top line of horizontal gradient to draw, will draw down from there
 //				LineCount = number of lines to draw
 //
-void DrawHorzGradientRGB8( char *ColorTable, char LeftX, char RightX, char TopY, char LineCount)
-{	//char i;
+void DrawHorzGradientRGB8( uint8_t *ColorTable, uint8_t LeftX, uint8_t RightX, uint8_t TopY, uint8_t LineCount)
+{	//uint8_t i;
 	
 	while(LineCount)
 	{	DrawFilledRect_RGB8(
@@ -512,7 +512,7 @@ void DrawHorzGradientRGB8( char *ColorTable, char LeftX, char RightX, char TopY,
 	}
 }
 
-void DrawLine_RGB8(int X1, int Y1, int X2, int Y2, char ColorRGB8) 
+void DrawLine_RGB8(int X1, int Y1, int X2, int Y2, uint8_t ColorRGB8) 
 {	int dy;
 	int dx;
 	int StepX, StepY;
@@ -568,7 +568,7 @@ void DrawLine_RGB8(int X1, int Y1, int X2, int Y2, char ColorRGB8)
 	}
 }
 
-void DrawColumn_RGB8(int Y, char ColorRGB8)
+void DrawColumn_RGB8(int Y, uint8_t ColorRGB8)
 {       
         uint8_t i;
 	// Enter rectangle coords
@@ -588,7 +588,7 @@ void DrawColumn_RGB8(int Y, char ColorRGB8)
 	DeselectLCD();
 }
 
-void DrawCircle_RGB8(int X1, int Y1, int Radius, char ColorRGB8) 
+void DrawCircle_RGB8(int X1, int Y1, int Radius, uint8_t ColorRGB8) 
 {	int f;
 	int ddF_x;
 	int ddF_y;
@@ -628,9 +628,9 @@ void DrawCircle_RGB8(int X1, int Y1, int Radius, char ColorRGB8)
 	}
 }
 
-void DrawPixmap_RGB8( char *Bitmap, char X, char Y)
-{	char Width;
-	char Height;
+void DrawPixmap_RGB8( uint8_t *Bitmap, uint8_t X, uint8_t Y)
+{	uint8_t Width;
+	uint8_t Height;
 	int ByteCount;
 	
 	Width = Bitmap[1];
@@ -652,7 +652,7 @@ void DrawPixmap_RGB8( char *Bitmap, char X, char Y)
 	DeselectLCD();
 }
 
-void DrawStr_8( const char *s,char X,char Y,char char_color8,char backgr_color8)
+void DrawStr_8( const uint8_t *s,uint8_t X,uint8_t Y,uint8_t char_color8,uint8_t backgr_color8)
 {
 	while(*s)
 		{
@@ -661,8 +661,8 @@ void DrawStr_8( const char *s,char X,char Y,char char_color8,char backgr_color8)
 		}
 		} 
 
-void DrawChar_8(char C ,char X,char Y,char char_color8,char backgr_color8){
-	char chardata,column,row,mask;
+void DrawChar_8(uint8_t C ,uint8_t X,uint8_t Y,uint8_t char_color8,uint8_t backgr_color8){
+	uint8_t chardata,column,row,mask;
 	GlcdWriteCmd(PASET);
 	GlcdWriteData(X);
 	GlcdWriteData(X + 4);	
@@ -689,10 +689,10 @@ void DrawChar_8(char C ,char X,char Y,char char_color8,char backgr_color8){
 /* ------------------------------------------------------------------------ */
 
 
-void DrawFilledRect_RGB212(char Left, char Top, char Right, char Bottom, int ColorRGB12)
+void DrawFilledRect_RGB212(uint8_t Left, uint8_t Top, uint8_t Right, uint8_t Bottom, int ColorRGB12)
 {	int i;
 	int PixelCount;
-	char Byte1, Byte2, Byte3;
+	uint8_t Byte1, Byte2, Byte3;
 	int LoopCount;
 	
 	if ((Left > Right) || (Top > Bottom))
@@ -721,9 +721,9 @@ void DrawFilledRect_RGB212(char Left, char Top, char Right, char Bottom, int Col
 	DeselectLCD();
 }
 
-void DrawPixmap_RGB12( char *Bitmap, char X, char Y)
-{	char Width;
-	char Height;
+void DrawPixmap_RGB12( uint8_t *Bitmap, uint8_t X, uint8_t Y)
+{	uint8_t Width;
+	uint8_t Height;
 	int ByteCount;
 	
 	Width = Bitmap[1];
@@ -758,7 +758,7 @@ static void SpiInit(void)
 //  Write 1 byte
 //
 //
-static void GlcdWriteCmd(char data)
+static void GlcdWriteCmd(uint8_t data)
 {
     
         outb(( inb(BASEPORT) &~ GLCD_CS), BASEPORT );
@@ -768,7 +768,7 @@ static void GlcdWriteCmd(char data)
 	SpiByteSend(data);
 }
 
-static void WriteRomDataToLCD( char *RomData, unsigned int Count)
+static void WriteRomDataToLCD( uint8_t *RomData, unsigned int Count)
 {	unsigned int i;
 	
 	for (i = 0; i < Count; i++)
@@ -777,7 +777,7 @@ static void WriteRomDataToLCD( char *RomData, unsigned int Count)
 	}
 }
 
-static void GlcdWriteData(char data)
+static void GlcdWriteData(uint8_t data)
 {
         outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );
         outb(( inb(BASEPORT) | SPI_SCK), BASEPORT );
@@ -785,7 +785,7 @@ static void GlcdWriteData(char data)
 	SpiByteSend(data);
 }
 // Msb first 
-static void SpiByteSend (char spi_data){
+static void SpiByteSend (uint8_t spi_data){
 
         outb(( inb(BASEPORT) &~ SPI_SDO), BASEPORT );
         if (spi_data & 0x80) outb(( inb(BASEPORT) | SPI_SDO), BASEPORT );

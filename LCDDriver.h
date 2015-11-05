@@ -83,20 +83,20 @@
 #define RGB12_YELLOW	0XFF2
 #define RGB12_PURPLE 	0XE0E
 
-void LCDDriverInitialize(char ColorMode);
-void LCDSelectColorMode(char, char *);
+void LCDDriverInitialize(uint8_t ColorMode);
+void LCDSelectColorMode(uint8_t, uint8_t *);
 void GlcdClear(void);
-void SetContrast(char);
-void PutPixel_RGB8(char, char, char);
-void DrawFilledRect_RGB8(char, char, char, char, char);
-void DrawHorzGradientRGB8(char *, char, char, char, char);
-void DrawLine_RGB8(int, int, int, int, char);
-void DrawColumn_RGB8(int, char);
-void DrawCircle_RGB8(int, int, int, char);
-void DrawStr_8(const char *,char,char,char,char);
-void DrawChar_8(char,char,char,char,char);
-void DrawFilledRect_RGB212(char, char, char, char, int);
-void DrawPixmap_RGB12( char *, char, char);
+void SetContrast(uint8_t);
+void PutPixel_RGB8(uint8_t, uint8_t, uint8_t);
+void DrawFilledRect_RGB8(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+void DrawHorzGradientRGB8(uint8_t *, uint8_t, uint8_t, uint8_t, uint8_t);
+void DrawLine_RGB8(int, int, int, int, uint8_t);
+void DrawColumn_RGB8(int, uint8_t);
+void DrawCircle_RGB8(int, int, int, uint8_t);
+void DrawStr_8(const uint8_t *,uint8_t,uint8_t,uint8_t,uint8_t);
+void DrawChar_8(uint8_t,uint8_t,uint8_t,uint8_t,uint8_t);
+void DrawFilledRect_RGB212(uint8_t, uint8_t, uint8_t, uint8_t, int);
+void DrawPixmap_RGB12( uint8_t *, uint8_t, uint8_t);
 void SetScrolling(void);
 void SetSep(uint8_t sep);
 
